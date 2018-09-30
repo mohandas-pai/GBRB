@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_game"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/bgclrs"
+    tools:context="com.example.hp.greenbrickyellowbrick.GameActivity">
+
+    <TextView
+        android:id="@+id/lblCounter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10"
+        android:textSize="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:fontFamily="monospace" />
+
+    <TextView
+        android:id="@+id/lblAnswer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textColor="#B0BEC5"
+        android:text="Hello"
+        android:textSize="25dp"
+        />
+
+    <ListView
+        android:id="@+id/listsa"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/lblAnswer"
+        android:layout_weight="1"
+        android:transcriptMode="alwaysScroll"
+        android:drawSelectorOnTop="false"
+
+        />
+
+    <EditText
+        android:id="@+id/txtText"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#00F260"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:id="@+id/btnPlayAgain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:background="#0575E6"
+        android:text="Play Agian"
+        />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:text="Ok"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#0575E6"
+        android:layout_alignTop="@+id/txtText"
+        android:layout_alignParentEnd="true" />
+
+
+
+</RelativeLayout>
