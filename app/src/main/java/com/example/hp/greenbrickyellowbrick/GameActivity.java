@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -24,7 +25,7 @@ public class GameActivity extends AppCompatActivity {
     TextView lblCounter,lblAnswer;
     EditText txtWord;
     Button btnSend,btnPlayAgain;
-    int counter=10;
+    int counter=9;
     String originalWord;
     ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
@@ -176,7 +177,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
-        String redString = "-|-|RedBrick: "+Integer.toString(rb);
+        String redString = "-|RedBrick: "+Integer.toString(rb);
         String greenString = " GreenBrick: "+Integer.toString(gb);
 
         cardString = redString+greenString;
@@ -214,8 +215,9 @@ public class GameActivity extends AppCompatActivity {
         if((counter<=4) && (counter>=3) ){
             lblCounter.setTextColor(Color.YELLOW);
         }
-        else
+        if((counter<3)) {
             lblCounter.setTextColor(Color.RED);
+        }
     }
 
     @Override
@@ -226,7 +228,7 @@ public class GameActivity extends AppCompatActivity {
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit this amazing game", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please click BACK again to exit this game", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -235,6 +237,12 @@ public class GameActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.helpmenu, menu);
+        return true;
     }
 
 }

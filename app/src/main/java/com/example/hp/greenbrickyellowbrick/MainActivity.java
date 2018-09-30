@@ -34,7 +34,10 @@ public class MainActivity extends AppCompatActivity {
         btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //go to help activity
+
+            Intent i = new Intent(getApplicationContext(),HelpActivity.class);
+            startActivity(i);
+
             }
         });
 
