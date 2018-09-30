@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
         btnPlay = (Button) findViewById(R.id.btnPlay);
         btnHelp = (Button) findViewById(R.id.btnHelp);
+        getSupportActionBar().setTitle("GreenBrick RedBrick");
 
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -30,6 +30,7 @@ public class GameActivity extends AppCompatActivity {
     ArrayList<String> listItems=new ArrayList<String>();
     ArrayAdapter<String> adapter;
     boolean doubleBackToExitPressedOnce = false;
+
    // Dialog customDialog = new Dialog(GameActivity.this);
 
     ArrayList<String> wordsList = new ArrayList<String>(Arrays.asList("able","acid","aged","also","area","army","away","baby","back","ball",
@@ -67,6 +68,8 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
+        getSupportActionBar().setTitle("GreenBrick RedBrick");
 
         ListView lv = (ListView) findViewById(R.id.listsa);
 
