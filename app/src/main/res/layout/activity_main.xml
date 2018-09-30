@@ -9,6 +9,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@mipmap/bgcolor"
+    android:configChanges="orientation"
+    android:screenOrientation="portrait"
     tools:context="com.example.hp.greenbrickyellowbrick.MainActivity">
 
     <Button
