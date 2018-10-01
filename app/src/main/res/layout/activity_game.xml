@@ -29,8 +29,8 @@
         android:id="@+id/lblAnswer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
-        android:textColor="#B0BEC5"
+        android:background="#000000"
+        android:textColor="#FF0000"
         android:text="Hello"
         android:textSize="25dp"
         />

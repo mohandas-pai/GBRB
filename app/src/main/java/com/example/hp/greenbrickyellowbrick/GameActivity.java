@@ -123,8 +123,10 @@ public class GameActivity extends AppCompatActivity {
                             String cards = getCards(myText, originalWord);
                             if (cards.contains("123")) {
                                 btnSend.setVisibility(View.INVISIBLE);
-                                listItems.add("You have guessed the right word : " + myText + " -|Congratulations");
+                                listItems.add("You have guessed the right word : " + myText + " Congratulations");
                                 txtWord.setVisibility(View.INVISIBLE);
+                                lblAnswer.setVisibility(View.VISIBLE);
+                                lblAnswer.setTextColor(Color.GREEN);
                                 lblAnswer.setText("You have guessed it right");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
                             } else {
@@ -137,6 +139,7 @@ public class GameActivity extends AppCompatActivity {
                             if (counter == -1 && !(cards.contains("123"))) {
                                 btnSend.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
+                                lblAnswer.setTextColor(Color.RED);
                                 btnPlayAgain.setText("You Lost, Try Again?");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
                             }
@@ -185,7 +188,7 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
-        String redString = "-|RedBrick: "+Integer.toString(rb);
+        String redString = "\t\tRedBrick: "+Integer.toString(rb);
         String greenString = " GreenBrick: "+Integer.toString(gb);
 
         cardString = redString+greenString;
