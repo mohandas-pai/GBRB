@@ -7,8 +7,10 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -94,6 +96,7 @@ public class GameActivity extends AppCompatActivity {
                 check=0;
             else
                 check=1;
+            Log.d("Word",originalWord);
         }
 
         lblAnswer.setVisibility(View.INVISIBLE);
@@ -118,7 +121,7 @@ public class GameActivity extends AppCompatActivity {
                             txtWord.setText("");
                             changeColor();
                             String cards = getCards(myText, originalWord);
-                            if (cards.contains("win")) {
+                            if (cards.contains("123")) {
                                 btnSend.setVisibility(View.INVISIBLE);
                                 listItems.add("You have guessed the right word : " + myText + " -|Congratulations");
                                 txtWord.setVisibility(View.INVISIBLE);
@@ -127,9 +130,11 @@ public class GameActivity extends AppCompatActivity {
                             } else {
                                 listItems.add(cards);
                                 adapter.notifyDataSetChanged();
-                            }
 
-                            if (counter == -1 && !(cards.contains("win"))) {
+                            }
+                            txtWord.onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+                            if (counter == -1 && !(cards.contains("123"))) {
                                 btnSend.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
                                 btnPlayAgain.setText("You Lost, Try Again?");
@@ -188,7 +193,7 @@ public class GameActivity extends AppCompatActivity {
         String finalSting = input + "\t\t" + cardString;
 
         if(gb==4)
-            finalSting = finalSting + "win";
+            finalSting = finalSting + "123";
 
         return finalSting;
     }
@@ -197,7 +202,7 @@ public class GameActivity extends AppCompatActivity {
             return true;
         }
 
-        boolean[] seen = new boolean[25];
+        boolean[] seen = new boolean[26];
         for (int i = 0; i < str.length(); i++) {
             int index = Character.toLowerCase(str.charAt(i)) - 'a';
             if (seen[index]) {
