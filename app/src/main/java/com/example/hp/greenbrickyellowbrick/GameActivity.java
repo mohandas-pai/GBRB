@@ -1,7 +1,6 @@
-package com.example.hp.greenbrickyellowbrick;
+package moh.theamazingappco.bricks;
 
-import android.app.Dialog;
-import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
@@ -10,7 +9,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +74,7 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        getSupportActionBar().setTitle("GreenBrick RedBrick");
+        getSupportActionBar().setTitle("GreenBrick RedBrick Easy Mode");
 
         ListView lv = (ListView) findViewById(R.id.listsa);
 
@@ -127,8 +130,10 @@ public class GameActivity extends AppCompatActivity {
                                 txtWord.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
                                 lblAnswer.setTextColor(Color.GREEN);
-                                lblAnswer.setText("You have guessed it right");
+                                lblAnswer.setText( originalWord+" is correct");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
                             } else {
                                 listItems.add(cards);
                                 adapter.notifyDataSetChanged();
@@ -227,6 +232,7 @@ public class GameActivity extends AppCompatActivity {
             lblCounter.setTextColor(Color.YELLOW);
         }
         if((counter<3)) {
+            lblCounter.startAnimation(shakeError());
             lblCounter.setTextColor(Color.RED);
         }
     }
@@ -235,11 +241,14 @@ public class GameActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
+            Intent i = new Intent(getApplicationContext(),MainActivity.class);
+            startActivity(i);
+            finish();
             return;
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit this game", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please click BACK again", Toast.LENGTH_SHORT).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -256,6 +265,12 @@ public class GameActivity extends AppCompatActivity {
         return true;
     }
 
+    public TranslateAnimation shakeError() {
+        TranslateAnimation shake = new TranslateAnimation(0, 10, 0, 0);
+        shake.setDuration(500);
+        shake.setInterpolator(new CycleInterpolator(7));
+        return shake;
+    }
 }
 
 /*

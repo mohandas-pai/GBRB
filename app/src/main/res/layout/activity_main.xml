@@ -18,9 +18,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lets Play"
-        android:background="#0575E6"
         android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="#0575E6"
+         />
+
 
     <Button
         android:id="@+id/btnHelp"
@@ -30,4 +32,28 @@
         android:background="#0575E6"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnPlay"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="23dp">
+        <RadioButton
+            android:id="@+id/easyMode"
+            android:text="Easy Mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:layout_below="@+id/btnPlay"
+            android:layout_centerHorizontal="true" />
+
+        <RadioButton
+            android:id="@+id/hardMode"
+            android:text="Difficult Mode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/easyMode"
+            android:layout_alignStart="@+id/easyMode" />
+    </RadioGroup>
 </RelativeLayout>
