@@ -6,6 +6,9 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -21,19 +24,33 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity {
+public class GameActivity extends AppCompatActivity implements RewardedVideoAdListener {
 
     TextView lblCounter,lblAnswer;
+    private static RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private static RecyclerView recyclerView;
+    private static ArrayList<DataModel> data;
+    private InterstitialAd mInterstitialAd;
+    private InterstitialAd mInterstitialAd1;
+    private RewardedVideoAd mRewardedVideoAd;
     EditText txtWord;
-    Button btnSend,btnPlayAgain;
+    Button btnSend,btnPlayAgain,btnExtra;
     int counter=9;
     String originalWord;
-    ArrayList<String> listItems=new ArrayList<String>();
-    ArrayAdapter<String> adapter;
+
     boolean doubleBackToExitPressedOnce = false;
 
    // Dialog customDialog = new Dialog(GameActivity.this);
@@ -42,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
             "band","bank","base","bath","bear","beat","been","beer","bell","belt","best","bill","bird","blow","blue","boat","body",
             "bomb","bond","bone","book","boom","born","boss","both","bowl","bulk","burn","bush","busy","call","calm","came","camp",
             "card","care","case","cash","cast","cell","chat","chip","city","club","coal","coat","code","cold","come","cook","cool",
-            "cope","copy","CORE","cost","crew","crop","dark","data","date","dawn","days","dead","deal","dean","dear","debt","deep",
+            "cope","copy","core","cost","crew","crop","dark","data","date","dawn","days","dead","deal","dean","dear","debt","deep",
             "deny","desk","dial","dick","diet","disc","disk","does","done","door","dose","down","draw","drew","drop","drug","dual",
             "duke","dust","duty","each","earn","ease","east","easy","edge","else","even","ever","evil","exit","face","fact","fail",
             "fair","fall","farm","fast","fate","fear","feed","feel","feet","fell","felt","file","fill","film","find","fine","fire",
@@ -50,7 +67,7 @@ public class GameActivity extends AppCompatActivity {
             "game","gate","gave","gear","gene","gift","girl","give","glad","goal","goes","gold","Golf","gone","good","gray","grew",
             "grey","grow","gulf","hair","half","hall","hand","hang","hard","harm","hate","have","head","hear","heat","held","hell",
             "help","here","hero","high","hill","hire","hold","hole","holy","home","hope","host","hour","huge","hung","hunt","hurt",
-            "idea","inch","into","iron","item","jack","jane","jean","john","join","jump","jury","just","keen","keep","kent","kept",
+            "idea","inch","into","iron","item","jury","jump","jean","jean","join","jump","jury","just","keen","keep","kent","kept",
             "kick","kill","kind","king","knee","knew","know","lack","lady","laid","lake","land","lane","last","late","lead","left",
             "less","life","lift","like","line","link","list","live","load","loan","lock","logo","long","look","lord","lose","loss",
             "lost","love","luck","made","mail","main","make","male","many","Mark","mass","matt","meal","mean","meat","meet","menu",
@@ -74,20 +91,25 @@ public class GameActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
-        getSupportActionBar().setTitle("GreenBrick RedBrick Easy Mode");
+        getSupportActionBar().setTitle("Bricks Easy Mode");
 
-        ListView lv = (ListView) findViewById(R.id.listsa);
+        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView.setHasFixedSize(true);
 
-        adapter=new ArrayAdapter<String>(this,
-                R.layout.list_display,
-                listItems);
-        lv.setAdapter(adapter);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        data = new ArrayList<DataModel>();
+
+        adapter = new UserTextAdapter(data);
+        recyclerView.setAdapter(adapter);
 
         lblAnswer = (TextView) findViewById(R.id.lblAnswer);
         lblCounter = (TextView) findViewById(R.id.lblCounter);
         txtWord = (EditText) findViewById(R.id.txtText);
         btnSend = (Button) findViewById(R.id.btnSend);
         btnPlayAgain = (Button) findViewById(R.id.btnPlayAgain);
+        btnExtra = (Button) findViewById(R.id.extraLife);
       //  btnAlpha = (Button) findViewById(R.id.Alpha);
         btnPlayAgain.setVisibility(View.INVISIBLE);
 
@@ -111,6 +133,59 @@ public class GameActivity extends AppCompatActivity {
 //
 //            }
 //        });
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd1 = new InterstitialAd(this);
+        loadInterstitialAd("ca-app-pub-6189499490928275/1988796256");
+        initializeInterstitialAd("ca-app-pub-6189499490928275~1410551068");
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        loadRewardedVideoAd();
+
+        btnExtra.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mRewardedVideoAd.isLoaded()) {
+                    mRewardedVideoAd.show();
+                }
+            }
+        });
+
+        mInterstitialAd1.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                // Code to be executed when an ad finishes loading.
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdClicked() {
+                // Code to be executed when the user clicks on an ad.
+                mInterstitialAd.getAdListener().onAdClosed();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when the interstitial ad is closed.
+                    Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                    startActivity(i);
+                    finish();
+            }
+        });
+
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,18 +201,22 @@ public class GameActivity extends AppCompatActivity {
                             String cards = getCards(myText, originalWord);
                             if (cards.contains("123")) {
                                 btnSend.setVisibility(View.INVISIBLE);
-                                listItems.add("You have guessed the right word : " + myText + " Congratulations");
+                                data.add(new DataModel(cards));
+//                                listItems.add("You have guessed the right word : " + myText + " Congratulations");
                                 txtWord.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
                                 lblAnswer.setTextColor(Color.GREEN);
                                 lblAnswer.setText( originalWord+" is correct");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
+                                recyclerView.setVerticalScrollBarEnabled(Boolean.TRUE);
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
                             } else {
-                                listItems.add(cards);
+//                                listItems.add(cards);
+//                                adapter.notifyDataSetChanged();
+                                  data.add(new DataModel(cards));
+                                //recyclerView.scheduleLayoutAnimation();
                                 adapter.notifyDataSetChanged();
-
                             }
                             txtWord.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
@@ -147,15 +226,24 @@ public class GameActivity extends AppCompatActivity {
                                 lblAnswer.setTextColor(Color.RED);
                                 btnPlayAgain.setText("You Lost, Try Again?");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
+                                btnExtra.setVisibility(View.INVISIBLE);
+                                txtWord.setVisibility(View.INVISIBLE);
+                                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
                             }
 
                         } else {
                             Toast.makeText(GameActivity.this, "Should be a valid 4 letter word",
-                                    Toast.LENGTH_LONG).show();
+                                       Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(GameActivity.this, "Letters cannot be repeated",
-                                Toast.LENGTH_LONG).show();
+                        if(myText.equals("shreetha")){
+                            getSupportActionBar().setTitle("hmm..");
+                            txtWord.setText("");
+                        }else {
+                            Toast.makeText(GameActivity.this, "Letters cannot be repeated",
+                                    Toast.LENGTH_LONG).show();
+                        }
                     }
                 }else{
                     Toast.makeText(GameActivity.this, "Should contain Valid Letters",
@@ -167,9 +255,13 @@ public class GameActivity extends AppCompatActivity {
         btnPlayAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),GameActivity.class);
-                startActivity(i);
-                finish();
+                if (mInterstitialAd1.isLoaded()) {
+                    mInterstitialAd1.show();
+                } else {
+                    Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                    startActivity(i);
+                    finish();
+                }
             }
         });
 
@@ -193,15 +285,15 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
         }
-        String redString = "\t\tRedBrick: "+Integer.toString(rb);
-        String greenString = " GreenBrick: "+Integer.toString(gb);
+        String redString = ","+Integer.toString(rb);
+        String greenString = ","+Integer.toString(gb);
 
         cardString = redString+greenString;
 
-        String finalSting = input + "\t\t" + cardString;
+        String finalSting = input + cardString;
 
         if(gb==4)
-            finalSting = finalSting + "123";
+            finalSting = finalSting + ",123";
 
         return finalSting;
     }
@@ -224,8 +316,15 @@ public class GameActivity extends AppCompatActivity {
         return true;
     }
 
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-6189499490928275/5799972775",
+                new AdRequest.Builder().build());
+
+
+    }
+
     public void changeColor(){
-        if((counter<=10) && (counter>=5) ){
+        if((counter<=100) && (counter>=5) ){
             lblCounter.setTextColor(Color.GREEN);
         }
         if((counter<=4) && (counter>=3) ){
@@ -270,6 +369,80 @@ public class GameActivity extends AppCompatActivity {
         shake.setDuration(500);
         shake.setInterpolator(new CycleInterpolator(7));
         return shake;
+    }
+
+    public void initializeInterstitialAd(String s){
+        MobileAds.initialize(this, s);
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        Toast.makeText(this, "Watch the full ad to get extra life", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        loadRewardedVideoAd();
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        Log.d("word","Came here counter was: "+counter);
+        counter = counter+1;
+        Log.d("word","Came here counter is now: "+counter);
+        Log.d("word","Came here lblCounter was: "+lblCounter.getText());
+        lblCounter.setText(Integer.toString(counter+1));
+        Log.d("word","Came here lblCounter is now: "+lblCounter.getText());
+        lblCounter.invalidate();
+        changeColor();
+        lblCounter.requestLayout();
+        loadRewardedVideoAd();
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+        Toast.makeText(this, "Extra life added, please close the ad", Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public void onResume() {
+        mRewardedVideoAd.resume(this);
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRewardedVideoAd.destroy(this);
+        super.onDestroy();
+    }
+    public void loadInterstitialAd(String s){
+        mInterstitialAd1.setAdUnitId(s);
+        mInterstitialAd1.loadAd(new AdRequest.Builder().build());
     }
 }
 

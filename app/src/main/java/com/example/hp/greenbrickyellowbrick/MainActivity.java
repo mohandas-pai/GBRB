@@ -1,6 +1,7 @@
 package moh.theamazingappco.bricks;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
@@ -23,6 +25,8 @@ public class MainActivity extends AppCompatActivity {
     RadioButton rbEasy,rbHard;
 
     Button btnPlay,btnHelp;
+    TextView cs,hs,it;
+    RadioGroup rg;
 
     private InterstitialAd mInterstitialAd;
 
@@ -33,6 +37,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences sharedPreferences
+                = getSharedPreferences("BricksData",
+                MODE_PRIVATE);
+
+        int currentStreak = sharedPreferences.getInt("CurrentStreak",0);
+        int highestStreak = sharedPreferences.getInt("HighestStreak",0);
+        cs = (TextView) findViewById(R.id.actStreak);
+        hs = (TextView) findViewById(R.id.higStreak);
+        it = (TextView) findViewById(R.id.infoText);
+        rg = (RadioGroup) findViewById(R.id.radgrp);
+
+        cs.setText("Active Streak - " +currentStreak);
+        hs.setText("Highest Streak - " +highestStreak);
 
         mInterstitialAd = new InterstitialAd(this);
         initializeInterstitialAd("ca-app-pub-6189499490928275~1410551068");
@@ -87,7 +104,21 @@ public class MainActivity extends AppCompatActivity {
         rbEasy = (RadioButton) findViewById(R.id.easyMode);
         rbHard = (RadioButton) findViewById(R.id.hardMode);
 
-        getSupportActionBar().setTitle("GreenBrick RedBrick");
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.easyMode :
+                        it.setText("In Easy Mode you get 10 tries to guess the word.\nEasy Mode does not count towards streak.");
+                        break;
+                    case R.id.hardMode:
+                        it.setText("In Hard Mode you get 7 tries to guess the word.\nHard Mode counts towards your streak.\nYou can watch ad's to increase your tries.");
+                        break;
+                }
+            }
+        });
+
+        getSupportActionBar().setTitle("Bricks");
 
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
