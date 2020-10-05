@@ -4,29 +4,43 @@
     package="moh.theamazingappco.bricks">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Bricks"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6189499490928275~1410551068"/>
-        <activity android:name=".MainActivity"
-            android:screenOrientation="portrait" >
+        <activity android:name="com.example.hp.greenbrickyellowbrick.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GameActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".HardModeActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".HelpActivity"
-            android:screenOrientation="portrait" ></activity>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6189499490928275~1410551068" />
+
+        <activity
+            android:name="com.example.hp.greenbrickyellowbrick.MainActivity"
+            android:screenOrientation="fullSensor">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".GameActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".HardModeActivity"
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".HelpActivity"
+            android:screenOrientation="fullSensor" />
     </application>
 
 </manifest>
