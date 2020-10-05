@@ -1,4 +1,4 @@
-package moh.theamazingappco.bricks;
+package com.example.hp.greenbrickyellowbrick;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +17,11 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+
+import moh.theamazingappco.bricks.GameActivity;
+import moh.theamazingappco.bricks.HardModeActivity;
+import moh.theamazingappco.bricks.HelpActivity;
+import moh.theamazingappco.bricks.R;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -153,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-            Intent i = new Intent(getApplicationContext(),HelpActivity.class);
+            Intent i = new Intent(getApplicationContext(), HelpActivity.class);
             startActivity(i);
 
             }

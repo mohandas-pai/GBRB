@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/GBRB.iml" filepath="$PROJECT_DIR$/GBRB.iml" group="GBRB" />
+      <module fileurl="file://$PROJECT_DIR$/app/GBRB-app.iml" filepath="$PROJECT_DIR$/app/GBRB-app.iml" group="GBRB/app" />
       <module fileurl="file://$PROJECT_DIR$/GreenBrickYellowBrick.iml" filepath="$PROJECT_DIR$/GreenBrickYellowBrick.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
