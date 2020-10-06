@@ -5,13 +5,15 @@ A word has been selected at random - can you guess it in 10? How about 7?
 
 The hardest part of this game is not screaming at the game when you loose (especially when you were so close!)
 
-How to play: <br>
-+ Make a guess at the 4-letter word<br>
-+ If your guess has any matching letters with the selected word you will be told how many <br>
-+ The green box next to your guess will tell you how many letters match and are in the correct position <br>
-+ The red box will tell you if any letters match but are not in the correct position <br>
-+ On your next guess you will try and figure out which letters are correct and wich are not<br>
-+ Guess wisely, you only have 10 guesses (7 guesses on hard mode)<br>
+How to play: 
+<ul>
+<li>Make a guess at the 4-letter word</li>
+<li>If your guess has any matching letters with the selected word you will be told how many</li>
+<li>The green box next to your guess will tell you how many letters match and are in the correct position</li>
+<li>The red box will tell you if any letters match but are not in the correct position</li>
+<li>On your next guess you will try and figure out which letters are correct and wich are not</li>
+<li>Guess wisely, you only have 10 guesses (7 guesses on hard mode)</li>
+</ul>
 
 Try to maintain your streak!
 
