@@ -33,5 +33,5 @@ Issues I need help with:
 1) A nice splash screen to go with the game. --DONE-- Thanks to https://github.com/raghavtalwar7
 2) Logo for the game might need some improvement. --DONE-- Thanks to https://github.com/arsundram
 3) The general UI changes that can be made, I am happy to accept.
-4) The UI for lobby activity can be improved a lot.
+4) The UI for lobby activity can be improved a lot. --DONE-- Thanks to https://github.com/shinigami2905
 5) Update readme.md which will also be displayed on the app store under app description. --DONE-- Thanks to https://github.com/BeccaStaple
