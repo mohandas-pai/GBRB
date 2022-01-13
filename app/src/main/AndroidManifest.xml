@@ -23,15 +23,19 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6189499490928275~1410551068" />
 
+
         <activity
             android:name="com.example.hp.greenbrickyellowbrick.MainActivity"
             android:screenOrientation="fullSensor">
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
         </activity>
+
         <activity
             android:name=".GameActivity"
             android:screenOrientation="fullSensor" />

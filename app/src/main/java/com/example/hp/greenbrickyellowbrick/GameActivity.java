@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.hp.greenbrickyellowbrick.MainActivity;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -31,6 +34,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+
+import moh.theamazingappco.bricks.DataModel;
+import moh.theamazingappco.bricks.UserTextAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +115,6 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
         txtWord = (EditText) findViewById(R.id.txtText);
         btnSend = (Button) findViewById(R.id.btnSend);
         btnPlayAgain = (Button) findViewById(R.id.btnPlayAgain);
-        btnExtra = (Button) findViewById(R.id.extraLife);
       //  btnAlpha = (Button) findViewById(R.id.Alpha);
         btnPlayAgain.setVisibility(View.INVISIBLE);
 
@@ -141,14 +146,6 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
         mRewardedVideoAd.setRewardedVideoAdListener(this);
         loadRewardedVideoAd();
 
-        btnExtra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
-                }
-            }
-        });
 
         mInterstitialAd1.setAdListener(new AdListener() {
             @Override
@@ -340,7 +337,7 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            Intent i = new Intent(getApplicationContext(),MainActivity.class);
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
             finish();
             return;

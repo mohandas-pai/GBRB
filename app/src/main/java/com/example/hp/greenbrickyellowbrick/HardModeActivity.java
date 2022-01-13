@@ -32,6 +32,9 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.example.hp.greenbrickyellowbrick.MainActivity;
+import moh.theamazingappco.bricks.DataModel;
+import moh.theamazingappco.bricks.UserTextAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -118,7 +121,6 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         lblCounter = (TextView) findViewById(R.id.lblCounter);
         txtWord = (EditText) findViewById(R.id.txtText);
         btnSend = (Button) findViewById(R.id.btnSend);
-        btnExtra = (Button) findViewById(R.id.extraLife);
         btnPlayAgain = (Button) findViewById(R.id.btnPlayAgain);
         //  btnAlpha = (Button) findViewById(R.id.Alpha);
         btnPlayAgain.setVisibility(View.INVISIBLE);
