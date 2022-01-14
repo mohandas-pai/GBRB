@@ -66,6 +66,9 @@
         android:layout_height="wrap_content"
         android:background="#CC9767"
         android:layout_alignTop="@+id/txtText"
+        android:fontFamily="serif-monospace"
+        android:textStyle="bold"
+        android:textSize="21dp"
         android:layout_alignParentEnd="true" />
 
 
@@ -76,6 +79,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
         android:background="#CC9767"
+        android:fontFamily="serif-monospace"
+        android:textStyle="bold"
+        android:textSize="21dp"
         android:text="Play Again"
         />
 

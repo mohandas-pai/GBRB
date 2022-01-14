@@ -44,21 +44,19 @@ import java.util.Random;
  * Created by hp on 02-10-2018.
  */
 
-public class HardModeActivity extends AppCompatActivity implements RewardedVideoAdListener {
+public class HardModeActivity extends AppCompatActivity {
     TextView lblCounter,lblAnswer,listText;
     EditText txtWord;
-    Button btnSend,btnPlayAgain,btnExtra;
+    Button btnSend,btnPlayAgain;
     int counter=6;
-    private InterstitialAd mInterstitialAd;
-    private InterstitialAd mInterstitialAd1;
     String originalWord;
     private static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    private RewardedVideoAd mRewardedVideoAd;
     private static RecyclerView recyclerView;
     private static ArrayList<DataModel> data;
     public boolean winflag = false;
     boolean doubleBackToExitPressedOnce = false;
+    boolean okPressed = false;
 
     // Dialog customDialog = new Dialog(GameActivity.this);
 
@@ -140,58 +138,6 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         lblAnswer.setVisibility(View.INVISIBLE);
         lblAnswer.setText("The Word was: "+originalWord);
 
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd1 = new InterstitialAd(this);
-        loadInterstitialAd("ca-app-pub-6189499490928275/1988796256");
-        initializeInterstitialAd("ca-app-pub-6189499490928275~1410551068");
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-        loadRewardedVideoAd();
-
-        btnExtra.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
-                }
-            }
-        });
-
-        mInterstitialAd1.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                mInterstitialAd.getAdListener().onAdClosed();
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the interstitial ad is closed.
-                Intent i = new Intent(getApplicationContext(), HardModeActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
 
 //        btnAlpha.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -212,7 +158,9 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
                             txtWord.setText("");
                             changeColor();
                             String cards = getCards(myText, originalWord);
+                            okPressed = true;
                             if (cards.contains("123")) {
+                                okPressed=false;
                                 btnSend.setVisibility(View.INVISIBLE);
                                 data.add(new DataModel(cards));
                                 txtWord.setVisibility(View.INVISIBLE);
@@ -222,10 +170,9 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
                                 winflag = true;
                                 recyclerView.setVerticalScrollBarEnabled(Boolean.TRUE);
                                 btnPlayAgain.setVisibility(View.VISIBLE);
-                                btnExtra.setVisibility(View.INVISIBLE);
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
-                                manageScore("win");
+                                addToStats("won");
                             } else {
                                 data.add(new DataModel(cards));
                                 adapter.notifyDataSetChanged();
@@ -234,13 +181,14 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
                             txtWord.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
                             if (counter == -1 && !(cards.contains("123"))) {
+                                okPressed = true;
                                 btnSend.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
                                 lblAnswer.setTextColor(Color.RED);
                                 btnPlayAgain.setText("You Lost, Try Again?");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
                                 txtWord.setVisibility(View.INVISIBLE);
-                                manageScore("lose");
+                                addToStats("lost");
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
                             }
@@ -268,14 +216,12 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         btnPlayAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mInterstitialAd1.isLoaded()) {
-                    mInterstitialAd1.show();
-                } else {
+                okPressed = false;
                     Intent i = new Intent(getApplicationContext(), HardModeActivity.class);
                     startActivity(i);
                     finish();
                 }
-            }
+
         });
 
 
@@ -335,17 +281,99 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         return true;
     }
 
-    private void manageScore(String s){
+    public void addToStats(String s){
+        int iHardwin,iHardlose,iHardCStreak,iHardHStreak,iHardFG,iHardLG;
+
+        if(s.equals("won")){
+            Log.d("Word","Won so we came here");
+            Log.d("Word","Counter value is "+counter);
+            SharedPreferences sharedPreferences
+                    = getSharedPreferences("BricksData",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor myEdit
+                    = sharedPreferences.edit();
+
+            iHardwin = sharedPreferences.getInt("HardWin",0);
+            iHardCStreak = sharedPreferences.getInt("CurrentStreak",0);
+            iHardHStreak = sharedPreferences.getInt("HighestStreak",0);
+            iHardFG = sharedPreferences.getInt("HardFG",0);
+            iHardLG = sharedPreferences.getInt("HardLG",0);
+
+            Log.d("Word","Before HardWin="+iHardwin+" CurrentStreak="+iHardCStreak+" HighestStreak="+
+                    iHardHStreak+" HardFG="+iHardFG+" HardLG="+iHardLG);
+
+            myEdit.putInt("HardWin", iHardwin+1);
+            myEdit.putInt("CurrentStreak",iHardCStreak+1);
+            if(iHardCStreak+1 > iHardHStreak){
+                myEdit.putInt("HighestStreak",iHardCStreak+1);
+            }
+            if(counter==5){
+                myEdit.putInt("HardFG", iHardFG+1);
+            }
+            if(counter==-1){
+                myEdit.putInt("HardLG", iHardLG+1);
+            }
+            myEdit.apply();
+
+            iHardwin = sharedPreferences.getInt("HardWin",0);
+            iHardCStreak = sharedPreferences.getInt("CurrentStreak",0);
+            iHardHStreak = sharedPreferences.getInt("HighestStreak",0);
+            iHardFG = sharedPreferences.getInt("HardFG",0);
+            iHardLG = sharedPreferences.getInt("HardLG",0);
+
+            Log.d("Word","Before HardWin="+iHardwin+" CurrentStreak="+iHardCStreak+" HighestStreak="+
+                    iHardHStreak+" HardFG="+iHardFG+" HardLG="+iHardLG);
+        }
+
+        else if(s.equals("lost")){
+            Log.d("Word","Lost so we came here");
+            Log.d("Word","Counter value is "+counter);
+
+            SharedPreferences sharedPreferences
+                    = getSharedPreferences("BricksData",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor myEdit
+                    = sharedPreferences.edit();
+
+            iHardlose = sharedPreferences.getInt("HardLose",0);
+            iHardCStreak = sharedPreferences.getInt("CurrentStreak",0);
+            iHardHStreak = sharedPreferences.getInt("HighestStreak",0);
+
+            Log.d("Word","Before HardLose="+iHardlose+" CurrentStreak="+iHardCStreak+" HighestStreak="+
+                    iHardHStreak);
+
+            myEdit.putInt("HardLose", iHardlose+1);
+            myEdit.putInt("CurrentStreak",0);
+
+            myEdit.apply();
+
+            iHardlose = sharedPreferences.getInt("HardLose",0);
+            iHardCStreak = sharedPreferences.getInt("CurrentStreak",0);
+            iHardHStreak = sharedPreferences.getInt("HighestStreak",0);
+
+            Log.d("Word","Before HardLose="+iHardlose+" CurrentStreak="+iHardCStreak+" HighestStreak="+
+                    iHardHStreak);
+
+        }
+    }
+
+    /*private void manageScore(String s){
         SharedPreferences sharedPreferences
                 = getSharedPreferences("BricksData",
                 MODE_PRIVATE);
 
         int currentStreak = sharedPreferences.getInt("CurrentStreak", 0);
         int highestStreak = sharedPreferences.getInt("HighestStreak", 0);
-        int newCurrentStreak = currentStreak + 1;
+        if(okPressed){
+            Log.d("word","Okay pressed so cancel streak");
+        }
+        else
+            Log.d("word","do not cancel streak");
+        Log.d("word","Before CurrentStreak = "+currentStreak+" and HighestStreak:"+highestStreak);
         SharedPreferences.Editor myEdit
                 = sharedPreferences.edit();
         if (s.equals("win")) {
+            int newCurrentStreak = currentStreak + 1;
             myEdit.putInt("CurrentStreak", newCurrentStreak);
             if (newCurrentStreak >= highestStreak) {
                 myEdit.putInt("HighestStreak", newCurrentStreak);
@@ -354,8 +382,8 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
             myEdit.putInt("CurrentStreak", 0);
         }
         myEdit.apply();
-
-    }
+        Log.d("word","After CurrentStreak = "+currentStreak+" and HighestStreak:"+highestStreak);
+    }*/
 
     public void changeColor(){
         if((counter<=100) && (counter>=5) ){
@@ -370,16 +398,15 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         }
     }
 
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-6189499490928275/5799972775",
-                new AdRequest.Builder().build());
-    }
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
-            if(winflag==false)
-                manageScore("lose");
+            if(okPressed){
+                addToStats("lost");
+            }else{
+                addToStats("not");
+            }
             Intent i = new Intent(getApplicationContext(),MainActivity.class);
             startActivity(i);
             finish();
@@ -387,7 +414,7 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         }
 
         this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Please click BACK again, You may lose your current streak", Toast.LENGTH_LONG).show();
 
         new Handler().postDelayed(new Runnable() {
 
@@ -397,6 +424,8 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
             }
         }, 2000);
     }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -409,79 +438,6 @@ public class HardModeActivity extends AppCompatActivity implements RewardedVideo
         shake.setDuration(500);
         shake.setInterpolator(new CycleInterpolator(7));
         return shake;
-    }
-    public void initializeInterstitialAd(String s){
-        MobileAds.initialize(this, s);
-    }
-
-    @Override
-    public void onRewardedVideoAdLoaded() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        Toast.makeText(this, "Watch the full ad to get extra life", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        Log.d("word","Came here counter was: "+counter);
-        counter = counter+1;
-        Log.d("word","Came here counter is now: "+counter);
-        Log.d("word","Came here lblCounter was: "+lblCounter.getText());
-        lblCounter.setText(Integer.toString(counter+1));
-        Log.d("word","Came here lblCounter is now: "+lblCounter.getText());
-        lblCounter.invalidate();
-        changeColor();
-        lblCounter.requestLayout();
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-
-    }
-
-    @Override
-    public void onRewardedVideoCompleted() {
-        Toast.makeText(this, "Extra life added, please close the ad", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(this);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(this);
-        super.onDestroy();
-    }
-    public void loadInterstitialAd(String s){
-        mInterstitialAd1.setAdUnitId(s);
-        mInterstitialAd1.loadAd(new AdRequest.Builder().build());
     }
 
 }

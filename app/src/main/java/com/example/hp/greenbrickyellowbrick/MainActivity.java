@@ -2,6 +2,7 @@ package com.example.hp.greenbrickyellowbrick;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,11 +30,9 @@ public class MainActivity extends AppCompatActivity {
 
     RadioButton rbEasy,rbHard;
 
-    Button btnPlay,btnHelp;
+    Button btnPlay,btnHelp,btnStats;
     TextView cs,hs,it;
     RadioGroup rg;
-
-    private InterstitialAd mInterstitialAd;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -42,69 +41,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences sharedPreferences
-                = getSharedPreferences("BricksData",
-                MODE_PRIVATE);
 
-        int currentStreak = sharedPreferences.getInt("CurrentStreak",0);
-        int highestStreak = sharedPreferences.getInt("HighestStreak",0);
-        cs = (TextView) findViewById(R.id.actStreak);
-        hs = (TextView) findViewById(R.id.higStreak);
+
         it = (TextView) findViewById(R.id.infoText);
         rg = (RadioGroup) findViewById(R.id.radgrp);
 
-        cs.setText("Active Streak - " +currentStreak);
-        hs.setText("Highest Streak - " +highestStreak);
 
-        mInterstitialAd = new InterstitialAd(this);
-        initializeInterstitialAd("ca-app-pub-6189499490928275~1410551068");
-        loadInterstitialAd("ca-app-pub-6189499490928275/1988796256");
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                mInterstitialAd.getAdListener().onAdClosed();
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the interstitial ad is closed.
-                if(rbEasy.isChecked()) {
-                    Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                    startActivity(i);
-                    finish();
-                }
-                else{
-                    Intent i = new Intent(getApplicationContext(), HardModeActivity.class);
-                    startActivity(i);
-                    finish();
-                }
-            }
-        });
 
         btnPlay = (Button) findViewById(R.id.btnPlay);
         btnHelp = (Button) findViewById(R.id.btnHelp);
+        btnStats = (Button) findViewById(R.id.btnScore);
 
         rbEasy = (RadioButton) findViewById(R.id.easyMode);
         rbHard = (RadioButton) findViewById(R.id.hardMode);
@@ -114,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.easyMode :
-                        it.setText("In Easy Mode you get 10 tries to guess the word.\nEasy Mode does not count towards streak.");
+                        it.setText("In Easy Mode you get 10 tries to guess the word.\nYou can use random 4 letter words.");
                         break;
                     case R.id.hardMode:
-                        it.setText("In Hard Mode you get 7 tries to guess the word.\nHard Mode counts towards your streak.\nYou can watch ad's to increase your tries.");
+                        it.setText("In Hard Mode you get 7 tries to guess the word.\nYou can only use dictionary words.");
                         break;
                 }
             }
@@ -129,26 +75,22 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(rbEasy.isChecked()) {
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    } else {
+
                         Log.d("TAG", "The interstitial wasn't loaded yet.");
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
                         startActivity(i);
                         finish();
-                    }
+
 
 
                 }
                 if(rbHard.isChecked()){
-                    if (mInterstitialAd.isLoaded()) {
-                        mInterstitialAd.show();
-                    } else {
+
                         Log.d("TAG", "The interstitial wasn't loaded yet.");
                         Intent i = new Intent(getApplicationContext(), HardModeActivity.class);
                         startActivity(i);
                         finish();
-                    }
+
 
                 }
             }
@@ -160,6 +102,16 @@ public class MainActivity extends AppCompatActivity {
 
             Intent i = new Intent(getApplicationContext(), HelpActivity.class);
             startActivity(i);
+
+            }
+        });
+
+        btnStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent i = new Intent(getApplicationContext(), ScoreBoard.class);
+                startActivity(i);
 
             }
         });
@@ -182,12 +134,5 @@ public class MainActivity extends AppCompatActivity {
                 doubleBackToExitPressedOnce=false;
             }
         }, 2000);
-    }
-    public void initializeInterstitialAd(String s){
-        MobileAds.initialize(this, s);
-    }
-    public void loadInterstitialAd(String s){
-        mInterstitialAd.setAdUnitId(s);
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 }

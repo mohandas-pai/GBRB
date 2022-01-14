@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@mipmap/bgcolor"
+    android:configChanges="orientation"
+    android:screenOrientation="portrait"
+    tools:context="com.example.hp.greenbrickyellowbrick.ScoreBoard">
+<RelativeLayout
+    android:id="@+id/topRL"
+    android:layout_width="match_parent"
+    android:background="#20000000"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:background="#30000000"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/brickslogo" />
+
+    <TextView
+        android:id="@+id/txtComp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/image"
+        android:layout_centerHorizontal="true"
+        android:text="\u00a9 The Amazing Apps Co"
+
+        />
+</RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/topRL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_below="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tableScore"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+                <android.support.v4.widget.Space>
+                </android.support.v4.widget.Space>
+
+                <TextView
+                    android:id="@+id/tvEasy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Easy"
+                    android:textSize="40dp" />
+
+                <TextView
+                    android:id="@+id/tvHard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hard"
+                    android:textSize="40dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/tvWin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wins"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyWin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardWin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/tvLost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lost"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyLost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardLost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <TextView
+                    android:id="@+id/tvWinperc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Win %"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyWinPerc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardWinPerc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="15dp"
+                >
+
+                <TextView
+                    android:id="@+id/tvCurStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ActiveStreak"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyCurStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardCurStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+                <TextView
+                    android:id="@+id/tvMaxStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MaxStreak"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyMaxStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardMaxStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="15dp"
+                >
+
+                <TextView
+                    android:id="@+id/tvFirstGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="First Guess"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyFirstGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardFirstGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="15dp"
+                >
+
+                <TextView
+                    android:id="@+id/tvLastGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last Guess"
+                    android:textSize="30dp" />
+
+                <TextView
+                    android:id="@+id/tvEasyLastGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+                <TextView
+                    android:id="@+id/tvHardLastGuess"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textSize="25dp" />
+
+            </TableRow>
+        </TableLayout>
+        <Button
+            android:id="@+id/btnShare"
+            android:layout_below="@+id/tableScore"
+            android:layout_alignRight="@+id/tableScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif-monospace"
+            android:background="#29B6F6"
+            android:textColor="#37474F"
+            android:textStyle="bold"
+            android:textSize="21dp"
+            android:text="Share" />
+        <Button
+            android:id="@+id/btnRefresh"
+            android:layout_below="@+id/btnShare"
+            android:layout_width="wrap_content"
+            android:background="#ba000d"
+            android:fontFamily="serif-monospace"
+            android:textStyle="bold"
+            android:textSize="21dp"
+            android:layout_height="wrap_content"
+            android:text="Reset" />
+    </RelativeLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>

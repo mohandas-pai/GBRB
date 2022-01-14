@@ -2,6 +2,7 @@ package moh.theamazingappco.bricks;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -42,20 +43,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class GameActivity extends AppCompatActivity implements RewardedVideoAdListener {
+public class GameActivity extends AppCompatActivity {
 
     TextView lblCounter,lblAnswer;
     private static RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
     private static RecyclerView recyclerView;
     private static ArrayList<DataModel> data;
-    private InterstitialAd mInterstitialAd;
-    private InterstitialAd mInterstitialAd1;
-    private RewardedVideoAd mRewardedVideoAd;
     EditText txtWord;
-    Button btnSend,btnPlayAgain,btnExtra;
+    Button btnSend,btnPlayAgain;
     int counter=9;
     String originalWord;
+    Boolean okPressed = false;
 
     boolean doubleBackToExitPressedOnce = false;
 
@@ -138,51 +137,6 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
 //
 //            }
 //        });
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd1 = new InterstitialAd(this);
-        loadInterstitialAd("ca-app-pub-6189499490928275/1988796256");
-        initializeInterstitialAd("ca-app-pub-6189499490928275~1410551068");
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
-        loadRewardedVideoAd();
-
-
-        mInterstitialAd1.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
-            }
-
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
-            }
-
-            @Override
-            public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
-            }
-
-            @Override
-            public void onAdClicked() {
-                // Code to be executed when the user clicks on an ad.
-                mInterstitialAd.getAdListener().onAdClosed();
-            }
-
-            @Override
-            public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
-            }
-
-            @Override
-            public void onAdClosed() {
-                // Code to be executed when the interstitial ad is closed.
-                    Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                    startActivity(i);
-                    finish();
-            }
-        });
-
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +150,9 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
                             txtWord.setText("");
                             changeColor();
                             String cards = getCards(myText, originalWord);
+                            okPressed = true;
                             if (cards.contains("123")) {
+                                okPressed=false;
                                 btnSend.setVisibility(View.INVISIBLE);
                                 data.add(new DataModel(cards));
 //                                listItems.add("You have guessed the right word : " + myText + " Congratulations");
@@ -208,6 +164,7 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
                                 recyclerView.setVerticalScrollBarEnabled(Boolean.TRUE);
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
+                                addToStats("won");
                             } else {
 //                                listItems.add(cards);
 //                                adapter.notifyDataSetChanged();
@@ -218,15 +175,16 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
                             txtWord.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
                             if (counter == -1 && !(cards.contains("123"))) {
+                                okPressed = true;
                                 btnSend.setVisibility(View.INVISIBLE);
                                 lblAnswer.setVisibility(View.VISIBLE);
                                 lblAnswer.setTextColor(Color.RED);
                                 btnPlayAgain.setText("You Lost, Try Again?");
                                 btnPlayAgain.setVisibility(View.VISIBLE);
-                                btnExtra.setVisibility(View.INVISIBLE);
                                 txtWord.setVisibility(View.INVISIBLE);
                                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                                 imm.hideSoftInputFromWindow(btnSend.getWindowToken(), 0);
+                                addToStats("lost");
                             }
 
                         } else {
@@ -252,13 +210,12 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
         btnPlayAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mInterstitialAd1.isLoaded()) {
-                    mInterstitialAd1.show();
-                } else {
+                okPressed = false;
                     Intent i = new Intent(getApplicationContext(), GameActivity.class);
                     startActivity(i);
                     finish();
-                }
+
+
             }
         });
 
@@ -313,13 +270,6 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
         return true;
     }
 
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-6189499490928275/5799972775",
-                new AdRequest.Builder().build());
-
-
-    }
-
     public void changeColor(){
         if((counter<=100) && (counter>=5) ){
             lblCounter.setTextColor(Color.GREEN);
@@ -337,6 +287,11 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
+            if(okPressed){
+                addToStats("lost");
+            }else{
+                addToStats("not");
+            }
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
             finish();
@@ -368,79 +323,85 @@ public class GameActivity extends AppCompatActivity implements RewardedVideoAdLi
         return shake;
     }
 
-    public void initializeInterstitialAd(String s){
-        MobileAds.initialize(this, s);
+
+
+
+    public void addToStats(String s){
+        int iEasyWin,iEasyLose,iEasyCStreak,iEasyHStreak,iEasyFG,iEasyLG;
+
+        if(s.equals("won")){
+            Log.d("Word","Won so we came here");
+            Log.d("Word","Counter value is "+counter);
+            SharedPreferences sharedPreferences
+                    = getSharedPreferences("BricksData",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor myEdit
+                    = sharedPreferences.edit();
+
+            iEasyWin = sharedPreferences.getInt("EasyWin",0);
+            iEasyCStreak = sharedPreferences.getInt("EasyCStreak",0);
+            iEasyHStreak = sharedPreferences.getInt("EasyHStreak",0);
+            iEasyFG = sharedPreferences.getInt("EasyFG",0);
+            iEasyLG = sharedPreferences.getInt("EasyLG",0);
+
+            Log.d("Word","Before EasyWin="+iEasyWin+" EasyCStreak="+iEasyCStreak+" EasyHStreak="+
+                    iEasyHStreak+" EasyFG="+iEasyFG+" EasyLG="+iEasyLG);
+
+            myEdit.putInt("EasyWin", iEasyWin+1);
+            myEdit.putInt("EasyCStreak",iEasyCStreak+1);
+            if(iEasyCStreak+1 > iEasyHStreak){
+                myEdit.putInt("EasyHStreak",iEasyCStreak+1);
+            }
+            if(counter==8){
+                myEdit.putInt("EasyFG", iEasyFG+1);
+            }
+            if(counter==-1){
+                myEdit.putInt("EasyLG", iEasyLG+1);
+            }
+            myEdit.apply();
+
+            iEasyWin = sharedPreferences.getInt("EasyWin",0);
+            iEasyCStreak = sharedPreferences.getInt("EasyCStreak",0);
+            iEasyHStreak = sharedPreferences.getInt("EasyHStreak",0);
+            iEasyFG = sharedPreferences.getInt("EasyFG",0);
+            iEasyLG = sharedPreferences.getInt("EasyLG",0);
+
+            Log.d("Word","After EasyWin="+iEasyWin+" EasyCStreak="+iEasyCStreak+" EasyHStreak="+
+                    iEasyHStreak+" EasyFG="+iEasyFG+" EasyLG="+iEasyLG);
+        }
+
+        else if(s.equals("lost")){
+            Log.d("Word","Lost so we came here");
+            Log.d("Word","Counter value is "+counter);
+
+            SharedPreferences sharedPreferences
+                    = getSharedPreferences("BricksData",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor myEdit
+                    = sharedPreferences.edit();
+
+            iEasyLose = sharedPreferences.getInt("EasyLose",0);
+            iEasyCStreak = sharedPreferences.getInt("EasyCStreak",0);
+            iEasyHStreak = sharedPreferences.getInt("EasyHStreak",0);
+
+            Log.d("Word","Before EasyLose="+iEasyLose+" EasyCStreak="+iEasyCStreak+" EasyHStreak="+
+                    iEasyHStreak);
+
+            myEdit.putInt("EasyLose", iEasyLose+1);
+            myEdit.putInt("EasyCStreak",0);
+
+            myEdit.apply();
+
+            iEasyLose = sharedPreferences.getInt("EasyLose",0);
+            iEasyCStreak = sharedPreferences.getInt("EasyCStreak",0);
+            iEasyHStreak = sharedPreferences.getInt("EasyHStreak",0);
+
+            Log.d("Word","After EasyLose="+iEasyLose+" EasyCStreak="+iEasyCStreak+" EasyHStreak="+
+                    iEasyHStreak);
+
+        }
     }
 
-    @Override
-    public void onRewardedVideoAdLoaded() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        Toast.makeText(this, "Watch the full ad to get extra life", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        Log.d("word","Came here counter was: "+counter);
-        counter = counter+1;
-        Log.d("word","Came here counter is now: "+counter);
-        Log.d("word","Came here lblCounter was: "+lblCounter.getText());
-        lblCounter.setText(Integer.toString(counter+1));
-        Log.d("word","Came here lblCounter is now: "+lblCounter.getText());
-        lblCounter.invalidate();
-        changeColor();
-        lblCounter.requestLayout();
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-
-    }
-
-    @Override
-    public void onRewardedVideoCompleted() {
-        Toast.makeText(this, "Extra life added, please close the ad", Toast.LENGTH_SHORT).show();
-    }
-    @Override
-    public void onResume() {
-        mRewardedVideoAd.resume(this);
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(this);
-        super.onDestroy();
-    }
-    public void loadInterstitialAd(String s){
-        mInterstitialAd1.setAdUnitId(s);
-        mInterstitialAd1.loadAd(new AdRequest.Builder().build());
-    }
 }
 
 /*
