@@ -25,7 +25,7 @@
 
         <activity
             android:name="com.example.hp.greenbrickyellowbrick.MainActivity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="portrait">
 
             <!--
             <intent-filter>
@@ -37,13 +37,13 @@
         </activity>
         <activity
             android:name=".GameActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HardModeActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".HelpActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

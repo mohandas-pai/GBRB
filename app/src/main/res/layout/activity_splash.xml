@@ -5,7 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.hp.greenbrickyellowbrick.SplashActivity"
-    android:background="#EFB2C7">
+    android:background="#90A4AE">
+
+    <ImageView
+        android:id="@+id/imageViewLogo"
+        android:layout_above="@+id/imageView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/brickslogo" />
 
     <ImageView
         android:id="@+id/imageView6"

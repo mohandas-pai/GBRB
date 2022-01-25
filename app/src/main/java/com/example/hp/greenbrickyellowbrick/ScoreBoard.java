@@ -43,6 +43,7 @@ public class ScoreBoard extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Bricks Stats");
 
+
         tEasyWin = (TextView) findViewById(R.id.tvEasyWin);
         tEasyLose = (TextView) findViewById(R.id.tvEasyLost);
         tHardwin = (TextView) findViewById(R.id.tvHardWin);
